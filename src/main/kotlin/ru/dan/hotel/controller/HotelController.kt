@@ -34,4 +34,11 @@ class HotelController(
     ): Flux<HotelDto> {
         return hotelService.getAllHotels(correlationId)
     }
+
+    @GetMapping("/hi")
+    fun hi(
+        @RequestHeader("X-Correlation-Id") correlationId: String
+    ): Mono<String> {
+        return Mono.just(correlationId)
+    }
 }

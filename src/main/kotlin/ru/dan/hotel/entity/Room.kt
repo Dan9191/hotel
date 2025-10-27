@@ -11,7 +11,5 @@ data class Room(
     @Column("hotel_id")
     val hotelId: Long,
     @Column("number")
-    val number: String,
-    @Column("available")
-    val available: Boolean
+    val number: String
 )

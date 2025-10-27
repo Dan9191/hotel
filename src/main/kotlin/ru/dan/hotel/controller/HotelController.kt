@@ -17,6 +17,9 @@ class HotelController(
 ) {
     private val logger = LoggerFactory.getLogger(HotelController::class.java)
 
+    /**
+     * Добавление отеля.
+     */
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_BOOKING_SERVICE', 'ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
@@ -28,6 +31,10 @@ class HotelController(
         return hotelService.createHotel(dto, correlationId)
     }
 
+
+    /**
+     * Список отелей.
+     */
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_BOOKING_SERVICE', 'ROLE_USER', 'ROLE_ADMIN')")
     fun getAllHotels(
@@ -36,6 +43,9 @@ class HotelController(
         return hotelService.getAllHotels(correlationId)
     }
 
+    /**
+     * Тестовый метод.
+     */
     @GetMapping("/hi")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     fun hi(

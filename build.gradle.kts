@@ -49,6 +49,8 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("io.projectreactor:reactor-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation("io.mockk:mockk:1.14.6")
+		// testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 }
 
 dependencyManagement {

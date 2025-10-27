@@ -2,6 +2,7 @@ package ru.dan.hotel.service
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import ru.dan.hotel.entity.Booking
@@ -24,6 +25,7 @@ class RoomService(
 ) {
     private val logger = LoggerFactory.getLogger(RoomService::class.java)
 
+    @Transactional
     fun createRoom(dto: RoomDto, correlationId: String): Mono<RoomDto> {
         logger.info("[$correlationId] Создание комнаты: ${dto.number} для отеля: ${dto.hotelId}")
         return hotelRepository.findById(dto.hotelId)
@@ -35,18 +37,21 @@ class RoomService(
             .map { roomMapper.toDto(it) }
     }
 
+    @Transactional
     fun getAvailableRooms(correlationId: String, startDate: LocalDate, endDate: LocalDate): Flux<RoomDto> {
         logger.info("[$correlationId] Получение доступных комнат на даты $startDate - $endDate")
         return roomRepository.findAvailableRooms(startDate, endDate)
             .map { roomMapper.toDto(it) }
     }
 
+    @Transactional
     fun getRecommendedRooms(correlationId: String, startDate: LocalDate, endDate: LocalDate): Flux<RoomDto> {
         logger.info("[$correlationId] Получение рекомендуемых комнат на даты $startDate - $endDate")
         return roomRepository.findRecommendedRooms(startDate, endDate)
             .map { roomMapper.toDto(it) }
     }
 
+    @Transactional
     fun confirmAvailability(roomId: Long, request: AvailabilityRequest, correlationId: String): Mono<Long> {
         logger.info("[$correlationId] Проверка доступности комнаты: $roomId, requestId: ${request.requestId}")
         return roomRepository.findById(roomId)
@@ -87,6 +92,7 @@ class RoomService(
             }
     }
 
+    @Transactional
     fun releaseAvailability(roomId: Long, requestId: String, correlationId: String): Mono<Void> {
         logger.info("[$correlationId] Освобождение брони для комнаты: $roomId, requestId: $requestId")
         return bookingRepository.findByRequestId(requestId)

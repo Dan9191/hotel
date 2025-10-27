@@ -2,6 +2,7 @@ package ru.dan.hotel.service
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import ru.dan.hotel.mapper.HotelMapper
@@ -15,6 +16,7 @@ class HotelService(
 ) {
     private val logger = LoggerFactory.getLogger(HotelService::class.java)
 
+    @Transactional
     fun createHotel(dto: HotelDto, correlationId: String): Mono<HotelDto> {
         logger.info("[$correlationId] Creating hotel: ${dto.name}")
         return hotelRepository.findByName(dto.name)
@@ -26,6 +28,7 @@ class HotelService(
             )
     }
 
+    @Transactional
     fun getAllHotels(correlationId: String): Flux<HotelDto> {
         logger.info("[$correlationId] Fetching all hotels")
         return hotelRepository.findAll()

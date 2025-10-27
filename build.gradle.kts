@@ -42,7 +42,7 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 	implementation("org.mapstruct:mapstruct:1.6.0")
 	kapt("org.mapstruct:mapstruct-processor:1.6.0")
-	implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.7.0")
 	implementation("io.r2dbc:r2dbc-h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")

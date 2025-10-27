@@ -10,10 +10,9 @@ interface BookingRepository : ReactiveCrudRepository<Booking, Long> {
     @Query("""
         SELECT * FROM bookings 
         WHERE room_id = :roomId 
-        AND booking_type = 'TEMPORARY' 
         AND (start_date <= :endDate AND end_date >= :startDate)
     """)
-    fun findOverlappingTemporaryBookings(
+    fun findOverlappingBookings(
         roomId: Long,
         startDate: LocalDate,
         endDate: LocalDate

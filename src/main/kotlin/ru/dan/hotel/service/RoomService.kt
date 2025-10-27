@@ -52,25 +52,26 @@ class RoomService(
         return roomRepository.findById(roomId)
             .switchIfEmpty(Mono.error(NoSuchElementException("Комната с id $roomId не найдена")))
             .flatMap {
-                bookingRepository.findOverlappingTemporaryBookings(
-                    roomId = roomId,
-                    startDate = request.startDate,
-                    endDate = request.endDate
-                ).flatMap<Long> { existingBooking ->
-                    logger.warn("[$correlationId] Комната $roomId уже забронирована на эти даты")
-                    Mono.error(IllegalStateException("Комната уже забронирована на эти даты"))
-                }.switchIfEmpty(
-                    // Проверка на идемпотентность
-                    bookingRepository.findByRequestId(request.requestId)
-                        .flatMap<Long> { existingBooking ->
-                            logger.info("[$correlationId] Бронь уже существует для requestId: ${request.requestId}")
-                            if (existingBooking.roomId != roomId || existingBooking.bookingType != BookingType.TEMPORARY) {
-                                Mono.error(IllegalStateException("Существующая бронь не соответствует комнате или типу"))
-                            } else {
-                                Mono.just(existingBooking.id!!)
-                            }
+                // Проверка на идемпотентность
+                bookingRepository.findByRequestId(request.requestId)
+                    .flatMap { existingBooking ->
+                        logger.info("[$correlationId] Бронь уже существует для requestId: ${request.requestId}")
+                        if (existingBooking.roomId != roomId || existingBooking.bookingType != BookingType.TEMPORARY) {
+                            Mono.error<Long>(IllegalStateException("Существующая бронь не соответствует комнате или типу"))
+                        } else {
+                            Mono.just(existingBooking.id!!)
                         }
-                        .switchIfEmpty(
+                    }
+                    .switchIfEmpty(
+                        // Проверка на пересечение броней (включая постоянные)
+                        bookingRepository.findOverlappingBookings(
+                            roomId = roomId,
+                            startDate = request.startDate,
+                            endDate = request.endDate
+                        ).flatMap<Long> {
+                            logger.warn("[$correlationId] Комната $roomId уже забронирована на эти даты")
+                            Mono.error(IllegalStateException("Комната уже забронирована на эти даты"))
+                        }.switchIfEmpty(
                             // Создание временной брони
                             bookingRepository.save(
                                 Booking(
@@ -82,7 +83,7 @@ class RoomService(
                                 )
                             ).map { it.id!! }
                         )
-                )
+                    )
             }
     }
 

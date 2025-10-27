@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Description
 import org.springframework.http.MediaType
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.security.test.context.support.WithMockUser
@@ -63,7 +64,8 @@ class RoomIntegrationTest {
 
     @Test
     @WithMockUser(roles = ["ADMIN"])
-    fun `должен создать комнату и получить доступные комнаты`() {
+    @Description("должен создать комнату и получить доступные комнаты")
+    fun should_create_room_and_get_available_rooms() {
         val roomDto = RoomDto(hotelId = hotelId!!, number = "101")
 
         // Создание комнаты
@@ -98,9 +100,10 @@ class RoomIntegrationTest {
 
     @Test
     @WithMockUser(roles = ["ADMIN"])
-    fun `должен получить рекомендуемые комнаты`() {
+    @Description("должен получить рекомендуемые комнаты")
+    fun should_receive_recommended_rooms() {
         // Создаем комнаты
-        val room = roomRepository.save(RoomDto(hotelId = hotelId!!, number = "101").toEntity()).block()!!
+        roomRepository.save(RoomDto(hotelId = hotelId!!, number = "101").toEntity()).block()
         roomRepository.save(RoomDto(hotelId = hotelId!!, number = "102").toEntity()).block()
         roomRepository.save(RoomDto(hotelId = hotelId!!, number = "103").toEntity()).block()
 
@@ -120,7 +123,8 @@ class RoomIntegrationTest {
 
     @Test
     @WithMockUser(roles = ["ADMIN"])
-    fun `должен подтвердить доступность комнаты и вернуть ID брони`() {
+    @Description("должен подтвердить доступность комнаты и вернуть ID брони")
+    fun should_confirm_the_availability_room_and_return_booking_ID() {
         // Создаем комнату
         val room = roomRepository.save(RoomDto(hotelId = hotelId!!, number = "101").toEntity()).block()!!
 
@@ -150,7 +154,8 @@ class RoomIntegrationTest {
 
     @Test
     @WithMockUser(roles = ["ADMIN"])
-    fun `должен не подтвердить доступность для забронированной комнаты`() {
+    @Description("должен не подтвердить доступность для забронированной комнаты")
+    fun should_not_confirm_availability_booked_room() {
         // Создаем комнату
         val room = roomRepository.save(RoomDto(hotelId = hotelId!!, number = "101").toEntity()).block()!!
 
@@ -185,7 +190,8 @@ class RoomIntegrationTest {
 
     @Test
     @WithMockUser(roles = ["ADMIN"])
-    fun `должен подтвердить идемпотентную бронь с тем же requestId`() {
+    @Description("должен подтвердить идемпотентную бронь с тем же requestId")
+    fun should_confirm_an_idempotent_reservation_with_the_same_requestId() {
         // Создаем комнату
         val room = roomRepository.save(RoomDto(hotelId = hotelId!!, number = "101").toEntity()).block()!!
 

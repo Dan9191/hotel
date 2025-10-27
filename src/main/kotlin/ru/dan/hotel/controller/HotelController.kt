@@ -18,17 +18,18 @@ class HotelController(
     private val logger = LoggerFactory.getLogger(HotelController::class.java)
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_BOOKING_SERVICE', 'ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     fun createHotel(
         @Valid @RequestBody dto: HotelDto,
+
         @RequestHeader("X-Correlation-Id") correlationId: String
     ): Mono<HotelDto> {
         return hotelService.createHotel(dto, correlationId)
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ROLE_BOOKING_SERVICE', 'ROLE_USER', 'ROLE_ADMIN')")
     fun getAllHotels(
         @RequestHeader("X-Correlation-Id") correlationId: String
     ): Flux<HotelDto> {
@@ -36,9 +37,11 @@ class HotelController(
     }
 
     @GetMapping("/hi")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     fun hi(
         @RequestHeader("X-Correlation-Id") correlationId: String
     ): Mono<String> {
         return Mono.just(correlationId)
     }
+
 }

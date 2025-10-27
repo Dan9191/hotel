@@ -19,7 +19,7 @@ class RoomController(
     private val logger = LoggerFactory.getLogger(RoomController::class.java)
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_BOOKING_SERVICE', 'ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     fun createRoom(
         @Valid @RequestBody dto: RoomDto,
@@ -29,7 +29,7 @@ class RoomController(
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ROLE_BOOKING_SERVICE', 'ROLE_USER', 'ROLE_ADMIN')")
     fun getAvailableRooms(
         @RequestHeader("X-Correlation-Id") correlationId: String
     ): Flux<RoomDto> {
@@ -37,7 +37,7 @@ class RoomController(
     }
 
     @GetMapping("/recommend")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ROLE_BOOKING_SERVICE', 'ROLE_USER', 'ROLE_ADMIN')")
     fun getRecommendedRooms(
         @RequestHeader("X-Correlation-Id") correlationId: String
     ): Flux<RoomDto> {
@@ -45,7 +45,7 @@ class RoomController(
     }
 
     @PostMapping("/{id}/confirm-availability")
-    @PreAuthorize("hasRole('BOOKING_SERVICE')")
+    @PreAuthorize("hasAnyRole('ROLE_BOOKING_SERVICE', 'ROLE_ADMIN')")
     fun confirmAvailability(
         @PathVariable id: Long,
         @Valid @RequestBody request: AvailabilityRequest,
@@ -55,7 +55,7 @@ class RoomController(
     }
 
     @PostMapping("/{id}/release")
-    @PreAuthorize("hasRole('BOOKING_SERVICE')")
+    @PreAuthorize("hasAnyRole('ROLE_BOOKING_SERVICE', 'ROLE_ADMIN')")
     fun releaseAvailability(
         @PathVariable id: Long,
         @RequestBody requestId: String,

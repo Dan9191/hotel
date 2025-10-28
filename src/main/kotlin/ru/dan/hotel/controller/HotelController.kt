@@ -51,7 +51,7 @@ class HotelController(
     fun hi(
         @RequestHeader("X-Correlation-Id") correlationId: String
     ): Mono<String> {
-        return Mono.just(correlationId)
+        return Mono.just("Hello from hotel service")
     }
 
 }

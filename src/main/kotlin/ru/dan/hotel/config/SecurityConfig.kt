@@ -29,7 +29,7 @@ class SecurityConfig {
                     // Разрешаем доступ к OpenAPI и Swagger UI без аутентификации
                     .pathMatchers("/api-docs", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/webjars/**").permitAll()
                     // Существующий разрешенный путь
-                    .pathMatchers("/api/hotels/hi").permitAll()
+                    .pathMatchers("/api/hotels", "/api/rooms","/api/rooms/recommend", "/actuator/**").permitAll()
                     // Эндпоинты для GET-запросов (доступны для USER, BOOKING_SERVICE, ADMIN)
                     .pathMatchers(HttpMethod.GET, "/api/hotels").hasAnyAuthority("ROLE_USER", "ROLE_BOOKING_SERVICE", "ROLE_ADMIN")
                     .pathMatchers(HttpMethod.GET, "/api/rooms").hasAnyAuthority("ROLE_USER", "ROLE_BOOKING_SERVICE", "ROLE_ADMIN")
